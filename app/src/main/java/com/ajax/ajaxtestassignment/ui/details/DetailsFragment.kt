@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,6 +11,7 @@ import com.ajax.ajaxtestassignment.R
 import com.ajax.ajaxtestassignment.data.model.Contact
 import com.ajax.ajaxtestassignment.databinding.FragmentDetailsBinding
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,9 +35,21 @@ class DetailsFragment : Fragment() {
     ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
 
-        viewModel.setId(contactId)
-        viewModel.itemLiveData.observe(viewLifecycleOwner) { contact ->
-            showContact(contact)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.delete -> {
+                    setEnabledUiState(false)
+                    viewModel.delete(contactId)
+                    true
+                }
+                else -> false
+            }
         }
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
@@ -45,7 +57,32 @@ class DetailsFragment : Fragment() {
         binding.fab.setOnClickListener {
             findNavController().navigate(DetailsFragmentDirections.showItemEditDetail(contactId))
         }
-        return binding.root
+
+        viewModel.setId(contactId)
+        viewModel.itemLiveData.observe(viewLifecycleOwner) { contact ->
+            showContact(contact)
+        }
+        viewModel.deleteLiveData.observe(viewLifecycleOwner) { e ->
+            if (e == null) {
+                Snackbar.make(binding.root, R.string.contact_deleted, Snackbar.LENGTH_SHORT).apply {
+                    addCallback(object :
+                        Snackbar.Callback() {
+                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                            findNavController().navigateUp()
+                        }
+                    })
+                    show()
+                }
+            } else {
+                setEnabledUiState(true)
+                Snackbar.make(binding.root, R.string.error, Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun setEnabledUiState(enabled: Boolean) {
+        binding.toolbar.menu.findItem(R.id.delete).isEnabled = enabled
+        binding.fab.isEnabled = enabled
     }
 
     private fun showContact(contact: Contact) {
