@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/start_fragment">
+
+    <fragment
+        android:id="@+id/start_fragment"
+        android:name="com.ajax.ajaxtestassignment.ui.start.StartFragment"
+        android:label="StartFragment"
+        tools:layout="@layout/fragment_start">
+        <action
+            android:id="@+id/show_item_detail"
+            app:destination="@id/details_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/details_fragment"
+        android:name="com.ajax.ajaxtestassignment.ui.details.DetailsFragment"
+        android:label="DetailFragment"
+        tools:layout="@layout/fragment_details">
+        <argument
+            android:name="item_id"
+            android:defaultValue="0"
+            app:argType="long" />
+
+        <action
+            android:id="@+id/show_item_edit_detail"
+            app:destination="@id/details_edit_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/details_edit_fragment"
+        android:name="com.ajax.ajaxtestassignment.ui.details.EditDetailsFragment"
+        android:label="DetailEditFragment"
+        tools:layout="@layout/fragment_edit_details">
+        <argument
+            android:name="item_id"
+            android:defaultValue="0"
+            app:argType="long" />
+    </fragment>
+</navigation>

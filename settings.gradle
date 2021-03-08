@@ -1,0 +1,2 @@
+rootProject.name = "AjaxContacts"
+include ':app'
