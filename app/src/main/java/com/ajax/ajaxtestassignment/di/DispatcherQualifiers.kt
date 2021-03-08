@@ -1,4 +1,4 @@
-package ua.medstar.idis.di
+package com.ajax.ajaxtestassignment.di
 
 import javax.inject.Qualifier
 

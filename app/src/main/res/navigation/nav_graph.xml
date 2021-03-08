@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_details">
         <argument
             android:name="item_id"
-            android:defaultValue="0"
+            android:defaultValue="0L"
             app:argType="long" />
 
         <action
@@ -30,12 +30,12 @@
     </fragment>
     <fragment
         android:id="@+id/details_edit_fragment"
-        android:name="com.ajax.ajaxtestassignment.ui.details.EditDetailsFragment"
+        android:name="com.ajax.ajaxtestassignment.ui.editdetails.EditDetailsFragment"
         android:label="DetailEditFragment"
         tools:layout="@layout/fragment_edit_details">
         <argument
             android:name="item_id"
-            android:defaultValue="0"
+            android:defaultValue="0L"
             app:argType="long" />
     </fragment>
 </navigation>

@@ -1,32 +1,41 @@
-package ua.medstar.idis.data.db
+package com.ajax.ajaxtestassignment.data.database
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import ua.medstar.idis.data.db.model.FreeNumber
+import androidx.room.*
+import com.ajax.ajaxtestassignment.data.model.Contact
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface FreeNumbersDao {
+abstract class ContactsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(number: FreeNumber): Long
+    abstract suspend fun insert(contact: Contact): Long
+
+    @Transaction
+    open suspend fun replaceContacts(contacts: List<Contact>) {
+        dropTable()
+        insertContacts(contacts)
+    }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMultipleRecords(numbers: List<FreeNumber>)
+    abstract suspend fun insertContacts(contacts: List<Contact>)
 
-    @Query("SELECT * FROM free_numbers")
-    suspend fun fetchAllData(): List<FreeNumber>
+    @Query("SELECT * FROM contacts")
+    abstract fun getContacts(): Flow<List<Contact>>
 
-    @Query("SELECT COUNT(id) FROM free_numbers")
-    suspend fun getCount(): Int
+    @Query("SELECT * FROM contacts WHERE id=:id")
+    abstract fun getContactAsFlow(id: Long): Flow<Contact>
 
-    @Query("SELECT * FROM free_numbers LIMIT 1")
-    suspend fun getValue(): FreeNumber?
+    @Query("SELECT * FROM contacts WHERE id=:id")
+    abstract suspend fun getContact(id: Long): Contact
+
+    @Query("DELETE FROM contacts WHERE id=:id")
+    abstract suspend fun deleteContactById(id: Long)
+
+    @Update
+    abstract suspend fun updateContact(contact: Contact)
 
     @Delete
-    suspend fun deleteRecord(number: FreeNumber)
+    abstract suspend fun deleteContact(contact: Contact)
 
-    @Query("DELETE FROM free_numbers")
-    fun dropTable()
+    @Query("DELETE FROM contacts")
+    abstract fun dropTable()
 }

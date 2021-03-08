@@ -1,4 +1,22 @@
 <resources>
     <string name="app_name">AjaxContacts</string>
-    <string name="title_item_detail">Item Detail</string>
+    <string name="avatar">Avatar</string>
+    <string name="fmt_name">%s %s</string>
+    <string name="error">Error has been occurred</string>
+
+    <!-- Contacts list -->
+    <string name="refresh">Refresh</string>
+    <string name="delete">Delete</string>
+
+    <!-- Edit -->
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email">E-mail address</string>
+    <string name="save">Save</string>
+
+    <string name="error_first_name_empty">First name must be not empty</string>
+    <string name="error_last_name_empty">Last name must be not empty</string>
+    <string name="error_email_empty">E-mail address must be not empty</string>
+    <string name="error_invalid_email">Invalid e-mail address</string>
+    <string name="contact_saved">Contact has been saved</string>
 </resources>

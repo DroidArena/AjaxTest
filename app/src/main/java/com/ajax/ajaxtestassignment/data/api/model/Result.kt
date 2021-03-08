@@ -27,7 +27,7 @@ data class Result(
     @Json(name = "phone")
     val phone: String,
     @Json(name = "picture")
-    val picture: Picture,
+    val picture: Picture?,
     @Json(name = "registered")
     val registered: Registered
 )

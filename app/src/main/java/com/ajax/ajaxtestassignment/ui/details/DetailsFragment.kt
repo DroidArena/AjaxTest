@@ -1,73 +1,63 @@
 package com.ajax.ajaxtestassignment.ui.details
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.ajax.ajaxtestassignment.placeholder.PlaceholderContent
-import com.ajax.ajaxtestassignment.databinding.FragmentItemDetailBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.ajax.ajaxtestassignment.R
+import com.ajax.ajaxtestassignment.data.model.Contact
+import com.ajax.ajaxtestassignment.databinding.FragmentDetailsBinding
+import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * A fragment representing a single Item detail screen.
- * This fragment is either contained in a [StartFragment]
- * in two-pane mode (on larger screen devices) or self-contained
- * on handsets.
- */
-class ItemDetailFragment : Fragment() {
+@AndroidEntryPoint
+class DetailsFragment : Fragment() {
+    companion object {
+        const val ARG_ITEM_ID = "item_id"
+    }
 
-    /**
-     * The placeholder content this fragment is presenting.
-     */
-    private var item: PlaceholderContent.PlaceholderItem? = null
-
-    lateinit var itemDetailTextView: TextView
-
-    private var _binding: FragmentItemDetailBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val viewModel by viewModels<DetailsViewModel>()
 
-        arguments?.let {
-            if (it.containsKey(ARG_ITEM_ID)) {
-                // Load the placeholder content specified by the fragment
-                // arguments. In a real-world scenario, use a Loader
-                // to load content from a content provider.
-                item = PlaceholderContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
-            }
-        }
+    private val contactId by lazy {
+        requireArguments().getLong(ARG_ITEM_ID, 0)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
 
-        _binding = FragmentItemDetailBinding.inflate(inflater, container, false)
-        val rootView = binding.root
-
-        binding.toolbarLayout?.title = item?.content
-
-        itemDetailTextView = binding.itemDetail
-        // Show the placeholder content as text in a TextView.
-        item?.let {
-            itemDetailTextView.text = it.details
+        viewModel.setId(contactId)
+        viewModel.itemLiveData.observe(viewLifecycleOwner) { contact ->
+            showContact(contact)
         }
-
-        return rootView
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+        binding.fab.setOnClickListener {
+            findNavController().navigate(DetailsFragmentDirections.showItemEditDetail(contactId))
+        }
+        return binding.root
     }
 
-    companion object {
-        /**
-         * The fragment argument representing the item ID that this fragment
-         * represents.
-         */
-        const val ARG_ITEM_ID = "item_id"
+    private fun showContact(contact: Contact) {
+        val name = getString(R.string.fmt_name, contact.firstname, contact.lastname)
+
+        binding.toolbar.title = name
+        binding.name.text = name
+        binding.email.text = contact.email
+
+        Glide.with(this)
+            .load(contact.pictureLarge)
+            .into(binding.avatar)
     }
 
     override fun onDestroyView() {
