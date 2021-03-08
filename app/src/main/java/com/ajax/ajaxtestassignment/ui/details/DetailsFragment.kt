@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -92,9 +93,14 @@ class DetailsFragment : Fragment() {
         binding.name.text = name
         binding.email.text = contact.email
 
-        Glide.with(this)
-            .load(contact.pictureLarge)
-            .into(binding.avatar)
+        if (!contact.pictureLarge.isNullOrEmpty()) {
+            binding.avatar.isVisible = true
+            Glide.with(this)
+                .load(contact.pictureLarge)
+                .into(binding.avatar)
+        } else {
+            binding.avatar.isVisible = false
+        }
     }
 
     override fun onDestroyView() {

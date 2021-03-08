@@ -1,5 +1,6 @@
 package com.ajax.ajaxtestassignment.ui.start
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -79,7 +80,12 @@ class ContactAdapter(
             )
             email.text = item.email
 
-            Glide.with(itemView).load(item.pictureThumbnail).into(avatar)
+            if (!item.pictureThumbnail.isNullOrEmpty()) {
+                avatar.background = null
+                Glide.with(itemView).load(item.pictureThumbnail).into(avatar)
+            } else {
+                avatar.setBackgroundColor(Color.GRAY)
+            }
         }
     }
 }
